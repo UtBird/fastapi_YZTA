@@ -1,6 +1,6 @@
 from typing import Annotated
 from database import SessionLocal
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request, HTTPException
 from pydantic import BaseModel, Field
 from passlib.context import CryptContext
 from models import User
@@ -9,8 +9,11 @@ from starlette import status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
+from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+templates = Jinja2Templates(directory="templates")
 
 SECRET_KEY = "h3t35dihyldh7gep7hgno7kx4aowx0tajp2b6cu45z6uv9arqomsq5qd48j23y1v"
 ALGORITHM = "HS256"
@@ -61,9 +64,20 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         user_id: int = payload.get("user_id")
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-        return user_id
+        return {"id": user_id}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+
+
+@router.get("/login-page")
+def render_login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+@router.get("/register-page")
+def render_register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(user_request: CreateUserRequest, db: db_dependency):
