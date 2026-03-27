@@ -13,11 +13,15 @@ from routers.todo import router as todo_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from starlette import status
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__)) 
+static_abs_path = os.path.join(script_dir, "static")
 
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=static_abs_path), name="static")
 
 @app.get("/")
 def read_root(request: Request):

@@ -23,7 +23,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 
 router = APIRouter(prefix="/todo", tags=["todos"])
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 class TodoRequest(BaseModel):
     title: str = Field (min_length=3)

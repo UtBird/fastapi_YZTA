@@ -13,7 +13,7 @@ from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 SECRET_KEY = "h3t35dihyldh7gep7hgno7kx4aowx0tajp2b6cu45z6uv9arqomsq5qd48j23y1v"
 ALGORITHM = "HS256"
